@@ -1,12 +1,101 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 body {
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    text-align: center;
+    margin: 0;
+    padding: 0;
     display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;}
+
+.container {
+    width: 720px;
+    height: 720px;
+    background: black url(/assets/img/cenario.png) repeat;
+    background-size: cover;
+    position: relative;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
+.titulo {
+    font-size: 3em;
+    text-shadow: 4px 4px 0px #7635af;
+    letter-spacing: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin-top: 50px;
+    animation: flutuar 2s infinite ease-in-out;
+}
+
+.titulo span {
+    display: block;
+    width: 100%;
+}
+
+.titulo .massacre {
+    text-align: left;
+    margin-left: -30px
+}
+
+.titulo .cosmico {
+    text-align: right;
+    margin-right: -100px;
+    margin-top: 15px; 
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    margin: 15px 0;
+    padding: 5px; 
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.menu li:hover {
+    transform: scale(1.2);
+}
+
+.icones {
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.icone {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    object-fit: contain;
+    transition: transform 0.2s ease-in-out;
+}
+
+.icone:hover {
+    transform: scale(1.1);
+}
+
+
+
+@keyframes flutuar {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(10px); }
+    100% { transform: translateY(0px); }
+}
