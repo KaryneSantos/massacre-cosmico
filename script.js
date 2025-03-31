@@ -14,11 +14,12 @@ novoJogo.addEventListener('click', (e) => {
     containerJogo.style.display = "none";
 });
 
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-        atualizarJogo();
-    }
-});
+// Variáveis da interface
+
+let pontuacao = 0;
+let escudo = 3;
+let vidas = 3;
+let pausado = false;
 
 const navePlayer = {
     x: canvas.width / 2 - 25,
@@ -47,6 +48,33 @@ inimigo2Imagem.src = "/assets/img/inimigo2.png";
 
 var inimigo3Imagem = new Image();
 inimigo3Imagem.src = "/assets/img/inimigo3.png";
+
+var escudoImagem = new Image();
+escudoImagem.src = "/assets/img/escudo.png";
+
+var pauseImagem = new Image();
+pauseImagem.src = "/assets/img/pause.png";
+
+var vidaCheiaImagem = new Image();
+vidaCheiaImagem.src = "/assets/img/vida_cheia.png";
+
+var vidaVaziaImagem = new Image();
+vidaVaziaImagem.src = "/assets/img/img_vazia.png";
+
+
+let somDoTiro;
+let SomDeFundo;
+
+function carregarSom(){
+    SomDeFundo = new Audio ('/assets/audio/SomDeFundo.mp3');
+    SomDeFundo.loop = true;
+    SomDeFundo.volume = 0.5;
+
+    somDoTiro = new Audio('/assets/audio/tiroDojogador.mp3');
+    somDoTiro.loop = false;
+
+}
+
 
 let tiros = [];
 let ultimoTiro = 0;
@@ -88,14 +116,47 @@ document.addEventListener("keydown", (e) => {
                 tempoVida: 0
             }
         );
+
+        if (somDoTiro){
+            somDoTiro.currentTime = 0;
+            somDoTiro.play();
+        }
+
+        if (e.key === " "){
+            espacoPressionado = true;
+        }
     }
     
 });
 
 document.addEventListener("keyup", (e) => {
     if (e.key === "ArrowLeft" || e.key === "ArrowRight") navePlayer.direcaoX = 0;
-    if (e.key === "ArrowUp" || e.key === "ArrowDown") navePlayer.direcaoY = 0;
+          if (e.key === "ArrowUp" || e.key === "ArrowDown") navePlayer.direcaoY = 0;
 });
+
+function desenharUI() {
+    ctx.fillStyle = "#43D61F";
+    ctx.font = "16px 'Press Start 2P', cursive";
+
+    const textoPontuacao = "PONTUAÇÃO";
+    const larguraTextoPontuacao = ctx.measureText(textoPontuacao).width;
+    ctx.fillText(textoPontuacao, canvas.width / 2 - larguraTextoPontuacao / 2, 30);
+    
+    const textoScore = pontuacao.toString().padStart(4, "0");
+    const larguraTextoScore = ctx.measureText(textoScore).width;
+    ctx.fillText(textoScore, canvas.width / 2 - larguraTextoScore / 2, 50);
+
+    for (let i = 0; i < 3; i++) {
+        let imgVida = i < vidas ? vidaCheiaImagem : vidaVaziaImagem;
+        ctx.drawImage(imgVida, canvas.width - 180 + i * 35, -6, 100, 100);
+    } 
+
+    for (let i = 0; i < escudo; i++) {
+        ctx.drawImage(escudoImagem, 80 + i * 45, -5, 85, 85);
+    }
+
+    ctx.drawImage(pauseImagem, 20, 20, 30, 30);
+}
 
 function moverNave() {
     navePlayer.x += navePlayer.direcaoX;
@@ -228,6 +289,8 @@ function desenharJogo() {
 
 function atualizarJogo() {
     desenharJogo();
+    carregarSom();
+    desenharUI();
     requestAnimationFrame(atualizarJogo);
 }
 
