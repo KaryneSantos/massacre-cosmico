@@ -18,10 +18,21 @@ novoJogo.addEventListener('click', (e) => {
     e.preventDefault();
     canvas.style.display = "block";
     containerJogo.style.display = "none";
-
-    if (somDeFundo){
-      SomDefundo.play().catch(e => console.log("Reprodução de áudio bloqueada:", e));
-    }
+ carregarSom().then(() => {
+        if (SomDeFundo) {
+            const playPromise = SomDeFundo.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Reprodução automática prevenida:", error);
+                    // Mostra um botão para o usuário iniciar o áudio manualmente
+                });
+            }
+        }
+    }).catch(error => {
+        console.error("Erro ao iniciar áudio:", error);
+    });
+   
 });
 
 // Variáveis da interface
@@ -71,6 +82,8 @@ vidaVaziaImagem.src = "/assets/img/vida_vazia.png";
 
 let somDoTiro;
 let SomDeFundo;
+
+let audioCarregado = false;
 
 function carregarSom() {
     return new Promise((resolve, reject) => {
