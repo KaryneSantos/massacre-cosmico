@@ -18,6 +18,10 @@ novoJogo.addEventListener('click', (e) => {
     e.preventDefault();
     canvas.style.display = "block";
     containerJogo.style.display = "none";
+
+    if (somDeFundo){
+      SomDefundo.play().catch(e => console.log("Reprodução de áudio bloqueada:", e));
+    }
 });
 
 // Variáveis da interface
@@ -69,12 +73,33 @@ let somDoTiro;
 let SomDeFundo;
 
 function carregarSom() {
-    SomDeFundo = new Audio('/assets/audios/SomDeFundo.mp3');
-    SomDeFundo.loop = true;
-    SomDeFundo.volume = 0.5;
-
-    somDoTiro = new Audio('/assets/audios/tiroDojogador.mp3');
-    somDoTiro.loop = false;
+    return new Promise((resolve, reject) => {
+        try {
+            SomDeFundo = new Audio('/assets/audio/SomDeFundo.mp3');
+            SomDeFundo.loop = true;
+            SomDeFundo.volume = 0.5;
+            SomDeFundo.preload = 'auto';
+            
+            somDoTiro = new Audio('/assets/audio/tiroDojogador.mp3');
+            somDoTiro.loop = false;
+            somDoTiro.preload = 'auto';
+            
+            // Verifica se os áudios estão prontos para tocar
+            const checkLoaded = () => {
+                if (SomDeFundo.readyState > 2 && somDoTiro.readyState > 2) {
+                    audioCarregado = true;
+                    resolve();
+                } else {
+                    setTimeout(checkLoaded, 100);
+                }
+            };
+            
+            checkLoaded();
+        } catch (e) {
+            console.error("Erro ao carregar áudios:", e);
+            reject(e);
+        }
+    });
 }
 
 let tiros = [];
@@ -115,6 +140,43 @@ function inimigosAtirando() {
             });
         }
     });
+}
+
+// Função de atirar com som
+function atirarComSom(e) {
+    if (e.key === " " && Date.now() - ultimoTiro > tempoEntreTiros) {
+        ultimoTiro = Date.now();
+
+        tiros.push(
+            {
+                x: navePlayer.x + navePlayer.width / 5 - 11,
+                y: navePlayer.y - 20,
+                width: 5,
+                height: 20,
+                dy: -5,
+                tempoVida: 0
+            },
+            {
+                x: navePlayer.x + (2 * navePlayer.width) / 5.5 - 13,
+                y: navePlayer.y - 20,
+                width: 5,
+                height: 20,
+                dy: -5,
+                tempoVida: 0
+            }
+        );
+
+        if (somDoTiro && audioCarregado) {
+            try {
+                // Criar nova instância para cada tiro
+                const novoTiro = new Audio(somDoTiro.src);
+                novoTiro.volume = somDoTiro.volume;
+                novoTiro.play().catch(e => console.log("Erro ao tocar som do tiro:", e));
+            } catch (e) {
+                console.error("Erro ao criar som do tiro:", e);
+            }
+        }
+    }
 }
 
 // Verificar colisões entre tiros e inimigos
