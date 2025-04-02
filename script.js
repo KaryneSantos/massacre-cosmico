@@ -88,12 +88,12 @@ let audioCarregado = false;
 function carregarSom() {
     return new Promise((resolve, reject) => {
         try {
-            SomDeFundo = new Audio('/assets/audio/SomDeFundo.mp3');
+            SomDeFundo = new Audio('/assets/audios/SomDeFundo.mp3');
             SomDeFundo.loop = true;
             SomDeFundo.volume = 0.5;
             SomDeFundo.preload = 'auto';
             
-            somDoTiro = new Audio('/assets/audio/tiroDojogador.mp3');
+            somDoTiro = new Audio('/assets/audios/tiroDojogador.mp3');
             somDoTiro.loop = false;
             somDoTiro.preload = 'auto';
             
